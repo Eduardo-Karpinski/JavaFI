@@ -61,7 +61,7 @@ public class Main {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					
 					long id = 2; // hardcoding
-					long amostra = Arrays.asList(new File("src/br/com/javafi/resources/").listFiles(new FileFilter() {
+					long totalPhotos = Arrays.asList(new File("src/br/com/javafi/resources/").listFiles(new FileFilter() {
 						@Override
 						public boolean accept(File pathname) {
 							if (pathname.getName().startsWith("photo."+id+"")) {
@@ -72,7 +72,7 @@ public class Main {
 					})).stream().count();
 					
 					
-					opencv_imgcodecs.imwrite("src/br/com/javafi/resources/photo."+id+"."+amostra+".jpg", imageToPhoto);
+					opencv_imgcodecs.imwrite("src/br/com/javafi/resources/photo."+id+"."+totalPhotos+".jpg", imageToPhoto);
 				}
 				
 			}
@@ -89,7 +89,7 @@ public class Main {
 		// my favorite
 		FaceRecognizer recognizer = LBPHFaceRecognizer.create();
 		recognizer.read("src/br/com/javafi/resources/faceRecognizerLBPH.yml");
-		recognizer.setThreshold(130);
+		recognizer.setThreshold(500);
 		
 		Frame frame = null;
 		
@@ -118,8 +118,8 @@ public class Main {
 				int id = label.get(0);
 				String name = id == -1 ? "Unknown" : names.get(id) + " - " + String.format("%.2f", confidence.get());
 				
-				int x = Math.max(rect.tl().x() - 10, 0);
-				int y = Math.max(rect.tl().y() - 10, 0);
+				int x = rect.tl().x() - 10;
+				int y = rect.tl().y() - 10;
 				
 				opencv_imgproc.putText(colorImg, name, new Point(x, y), opencv_imgproc.FONT_HERSHEY_SIMPLEX, 1.4, new Scalar(0, 255, 0, 0));
 				
