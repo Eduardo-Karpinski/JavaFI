@@ -31,8 +31,6 @@ hs_err_pid*
 # unnecessary files 
 *.jpg
 *.png
-*.xml
-*.yml
 
 
 
