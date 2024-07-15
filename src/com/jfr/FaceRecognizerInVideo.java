@@ -39,6 +39,7 @@ public class FaceRecognizerInVideo {
 				FaceRecognizer faceRecognizer = LBPHFaceRecognizer.create()) {
 
 			faceRecognizer.read(trainedResult);
+			faceRecognizer.setThreshold(100);
 			camera.start();
 
 			CanvasFrame cameraVideo = new CanvasFrame("video", CanvasFrame.getDefaultGamma() / camera.getGamma());
@@ -54,11 +55,11 @@ public class FaceRecognizerInVideo {
 				opencv_imgproc.cvtColor(colorImg, grayImg, opencv_imgproc.COLOR_BGR2GRAY);
 
 				RectVector faces = new RectVector();
-				classifier.detectMultiScale(grayImg, faces, 1.1, 3, 0, new Size(150, 150), new Size(500, 500));
+				classifier.detectMultiScale(grayImg, faces);
 
 				for (int i = 0; i < faces.size(); i++) {
 					Rect rect = faces.get(i);
-					opencv_imgproc.rectangle(colorImg, rect, new Scalar(0, 0, 255, 0));
+					opencv_imgproc.rectangle(colorImg, rect, Scalar.RED);
 
 					Mat imageToPhoto = new Mat(grayImg, rect);
 					opencv_imgproc.resize(imageToPhoto, imageToPhoto, new Size(160, 160));
@@ -71,13 +72,12 @@ public class FaceRecognizerInVideo {
 						keyListenerImpl.setCurrentImage(label.get(0), imageToPhoto);
 					}
 
-					String prediction = getName(label.get(0)) + "(" + String.format("%.2f", confidence.get()) + ")";
+					String prediction = getName(label.get(0), confidence.get());
 
 					int x = Math.max(rect.tl().x() - 10, 0);
 					int y = Math.max(rect.tl().y() - 10, 0);
 
-					opencv_imgproc.putText(colorImg, prediction, new Point(x, y), opencv_imgproc.FONT_HERSHEY_SIMPLEX,
-							1.0, new Scalar(0, 255, 0, 0));
+					opencv_imgproc.putText(colorImg, prediction, new Point(x, y), opencv_imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar.GREEN);
 				}
 
 				if (cameraVideo.isVisible()) {
@@ -87,10 +87,10 @@ public class FaceRecognizerInVideo {
 		}
 	}
 
-	public String getName(int key) {
+	public String getName(int key, double confidence) {
 		switch (key) {
 		case 1:
-			return "Eduardo William";
+			return "Eduardo William"+  "(" + String.format("%.2f", confidence) + ")";
 		default:
 			return "Unknown";
 		}
@@ -109,8 +109,7 @@ class KeyListenerImpl implements KeyListener {
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-	}
+	public void keyTyped(KeyEvent e) {}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -122,8 +121,7 @@ class KeyListenerImpl implements KeyListener {
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-	}
+	public void keyReleased(KeyEvent e) {}
 
 	private void savePhoto(Integer id, Mat imageToPhoto) {
 		System.out.println("Salvando imagem");
@@ -139,13 +137,15 @@ class KeyListenerImpl implements KeyListener {
 			}
 		}
 
-		long totalPhotos = Arrays
-				.stream(directory.listFiles((FileFilter) pathname -> pathname.getName().startsWith("photo."))).count();
+		long totalPhotos = Arrays.stream(directory.listFiles((FileFilter) pathname -> pathname.getName().startsWith("photo."))).count();
 
 		String photoPath = directoryPath + "/photo." + totalPhotos + ".jpg";
 		opencv_imgcodecs.imwrite(photoPath, imageToPhoto);
 
+		System.out.println(totalPhotos + 1 + " Photos");
+		
 		this.id = null;
 		this.currentImage = null;
 	}
+	
 }

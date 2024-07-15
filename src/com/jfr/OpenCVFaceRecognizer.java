@@ -43,8 +43,9 @@ public class OpenCVFaceRecognizer {
             counter++;
         }
 
-        FaceRecognizer faceRecognizer = LBPHFaceRecognizer.create();
-        faceRecognizer.train(images, labels);
-        faceRecognizer.save("data/faceRecognizerLBPH.yml");
+        try (FaceRecognizer faceRecognizer = LBPHFaceRecognizer.create()) {
+        	faceRecognizer.train(images, labels);
+        	faceRecognizer.save("data/faceRecognizerLBPH.yml");
+        }
     }
 }
