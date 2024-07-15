@@ -38,11 +38,8 @@ public class OpenCVFaceRecognizer {
 
         for (File image : imageFiles) {
             Mat img = opencv_imgcodecs.imread(image.getAbsolutePath(), opencv_imgcodecs.IMREAD_GRAYSCALE);
-
             images.put(counter, img);
-
             labelsBuf.put(counter, label);
-
             counter++;
         }
 
