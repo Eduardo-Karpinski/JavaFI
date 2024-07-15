@@ -77,7 +77,7 @@ public class FaceRecognizerInVideo {
 					int y = Math.max(rect.tl().y() - 10, 0);
 
 					opencv_imgproc.putText(colorImg, prediction, new Point(x, y), opencv_imgproc.FONT_HERSHEY_SIMPLEX,
-							1.0, new Scalar(0, 255, 0, 2.0));
+							1.0, new Scalar(0, 255, 0, 0));
 				}
 
 				if (cameraVideo.isVisible()) {
@@ -90,9 +90,9 @@ public class FaceRecognizerInVideo {
 	public String getName(int key) {
 		switch (key) {
 		case 1:
-			return "Eduardo william";
+			return "Eduardo William";
 		default:
-			return "unknown";
+			return "Unknown";
 		}
 	}
 
